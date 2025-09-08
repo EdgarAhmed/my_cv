@@ -78,7 +78,7 @@ content:
         description: | # this will include new lines to allow paragraphs
           I started this project as a way if learning <mark>React</mark> and it has since grown into a fully fledged app. I have learned many skills through this and been I'm very proud of having this in my portfolio. If you don't have a project as awesome as this I would advise you make one.
 
-  - title: Experience # Title for the section
+  - title: "**Experience**" # Title for the section
     layout: list # Type of content section (list/text)
     content:
     - layout: left
@@ -132,25 +132,25 @@ content:
         - Oversaw financial and administrative tasks  
         - Built strong relationships with patients and staff
 
-  - title: Education
+  - title: "**Education**"
     layout: list
     content:
     - layout: left
-      title: IronHack | Madrid, Spain.
-      sub_title: Data Analytics Bootcamp
+      title: Data Analytics Bootcamp
+      sub_title: IronHack | Madrid, Spain.
       description: |
         I completed a data analytics bootcamp, specializing in ETL processes, EDA, advanced statistics, and data visualization. I gained proficiency in Python, SQL, and tools like Power BI, Tableau, Excel, Google Sheets, and MongoDB.
     - layout: left
-      title: Universidad Pontificia de Comillas | Madrid, Spain.
-      sub_title: MSc. in International Development and Cooperation.
+      title: MSc. in International Development and Cooperation.
+      sub_title: Universidad Pontificia de Comillas | Madrid, Spain.
       description: |
         Master's program, where I gained the necessary knowledge to understand the operations of both national and international organisations. Particularly intrigued and focused on impact finance and ethical and responsible investment.
     - layout: left
-      title: Universidad Europea de Madrid | Madrid, Spain.
-      sub_title: Bachelor (Honours) degree standard in Health Sciences (Physiotherapy)
+      title: Bachelor (Honours) degree standard in Health Sciences (Physiotherapy).
+      sub_title: Universidad Europea de Madrid | Madrid, Spain.
 
 
-  - title: A Little More About Me
+  - title: "**A little bit more about me**" 
     layout: text
     content: | # this will include new lines to allow paragraphs
       Alongside my interests in networks and software engineering some of my other interests and hobbies are:
