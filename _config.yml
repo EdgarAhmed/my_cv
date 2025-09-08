@@ -48,9 +48,17 @@ additional_links:
 # about_title: About Me
 about_profile_image: images/profile.jpg
 about_content: | # this will include new lines to allow paragraphs
-  Hi, my name's Edgar and I'm a Business Analyst with a prone inclination to data analytics . Since I decived to focus my carreer path in the data world I have been lucky enough to work with consulting companies along a great lot of fantastic people. I have worked at a number of companies gaining teamwork and leadership skills.
 
-  Althought I belive I still have a long way to go and a lot to lear I can say I am most skilled in: <mark>PowerBi</mark> as it has been my daily tool for the last couple of years and <mark>Eating Pizza</mark>
+  Hi, my name's Edgar and I'm a Business Analyst with a strong inclination toward data analytics. Since I decided to focus my career path in the data world, I have been lucky enough to work with consulting companies alongside a great number of fantastic people. I have worked at several companies, gaining teamwork and leadership skills.
+
+  Although I believe I still have a long way to go and a lot to learn, I can say I am most skilled in <mark>Power BI</mark>, as it has been my daily tool for the last couple of years, and <mark>Eating Pizza</mark>.
+
+  I feel really comfortable working with:
+  - <mark>Python</mark>
+  - <mark>SQL</mark>
+  - other visualization tools such as <mark>Tableau</mark> and <mark>Looker Studio</mark>.
+
+  
 
 content:
   - title: Projects # Title for the section
