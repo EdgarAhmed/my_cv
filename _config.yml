@@ -12,7 +12,7 @@ email: edgar.ahmed89@gmail.com
 website: www.github.com/sproogen/resume-theme
 
 # Dark Mode (true/false/never)
-darkmode: false
+darkmode: true
 
 # Social links
 twitter_username: facespics
@@ -22,7 +22,7 @@ github_username:  sproogen
 # facebook_username: jekyll
 # flickr_username: jekyll
 instagram_username: jameswgrant
-linkedin_username: jameswgrant
+linkedin_username: https://www.linkedin.com/in/edgar-ahmed-mora/?locale=en_US
 # xing_username: jekyll
 # pinterest_username: jekyll
 youtube_username: globalmtb
