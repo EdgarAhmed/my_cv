@@ -22,7 +22,7 @@ github_username:  sproogen
 # facebook_username: jekyll
 # flickr_username: jekyll
 instagram_username: jameswgrant
-linkedin: "https://www.linkedin.com/in/edgar-ahmed-mora/?locale=en_US"
+linkedin_username: edgar-ahmed-mora
 # xing_username: jekyll
 # pinterest_username: jekyll
 youtube_username: globalmtb
@@ -31,9 +31,10 @@ youtube_username: globalmtb
 
 # Additional icon links
 additional_links:
-- title: itsgoingto.be
-  icon: fas fa-globe
-  url: https://www.itsgoingto.be
+  - title: "LinkedIn"
+    icon: "fab fa-linkedin"
+    url: "https://www.linkedin.com/in/edgar-ahmed-mora/?locale=en_US"
+
 # - title: another link
 #   icon: font awesome brand icon name (eg. fab fa-twitter) (https://fontawesome.com/icons?d=gallery&m=free)
 #   url: Link url (eg. https://google.com)
