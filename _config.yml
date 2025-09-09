@@ -132,7 +132,7 @@ content:
         - Oversaw financial and administrative tasks  
         - Built strong relationships with patients and staff
 
-  - title: "**Education**"
+  - title: "<strong>Education</strong>" 
     layout: list
     content:
     - layout: left
