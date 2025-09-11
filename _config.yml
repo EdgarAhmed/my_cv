@@ -83,7 +83,7 @@ content:
       quote: >
         Yeah, you read it right. For five years I was a lecturer at UFV, a private university located in Madrid. 
       description: | 
-       I taught diverse subjects related to the field. I had to sell myself quite well, as a couple of universities invited me as a guest lecturer in Paris (Ecole d'Assas - 2020) and Vienna (St. Pölen University - 2022).
+       For five years I was part of UFV, a private university located in Madrid. Durign that time, I taught diverse number of subjects related to health science. I had to do something well enough while speaking in front of large audiences, as a couple of universities invited me as a guest lecturer in Paris (Ecole d'Assas - 2020) and Vienna (St. Pölen University - 2022).
         
         Task and responsabilites include:  
         - Prepared and delivered lectures for undergraduate students.
@@ -112,17 +112,19 @@ content:
       sub_title: IronHack | Madrid, Spain.
       caption: 2023
       description: |
-        I completed a data analytics bootcamp, specializing in ETL processes, EDA, advanced statistics, and data visualization. I gained proficiency in Python, SQL, and tools like Power BI, Tableau, Excel, Google Sheets, and MongoDB.
+        After having a taste of what it was working as a physio I new that was not the right field for me anymore. I started playing around with python and after getting realy into it, I decided to enrol in a Data Analytics Bootcamp. I could get a broad knowledge in ETL processes, EDA, advanced statistics, and data visualization. I gained proficiency in Python, SQL, and tools like Power BI, Tableau, Excel, Google Sheets, and MongoDB, which served me greatly for my future jobs.  
     - layout: left
       title: MSc. in International Development and Cooperation.
       sub_title: Universidad Pontificia de Comillas | Madrid, Spain.
       caption: 2023
       description: |
-        Master's program, where I gained the necessary knowledge to understand the operations of both national and international organisations. Particularly intrigued and focused on impact finance and ethical and responsible investment.
+        I like to define myslef as curious and one of the areas that alwasy stood out for me were International Cooperation, being that the reason I enroled in a Master's program. During the Master's duration  I gained the necessary knowledge to understand the operations of both national and international organisations. Particularly intrigued and focused on impact finance and ethical and responsible investment. Alghouth I did learn a lot in a field that really (apasoinari) I could not see myself working in this field, which is one of the reasons I end-up in the data world. I guess lost of the times we learn thourgh trial and error.
     - layout: left
       title: Bachelor (Honours) Degree Standard in Health Sciences (Physiotherapy).
       sub_title: Universidad Europea de Madrid | Madrid, Spain.
       caption: 2013
+      description: |
+        Everyone has a first love, or a first passion but first does not mean the best or the right one for the rest of your live. This is what happened to me and with physiotherapy. I had a good time while studing it, it allowed me to go abroad several times which enriched me enormusly but I knew it was not something I wanted to do the rest of my life. 
   
   - title: "<strong>Projects</strong>"
     layout: list
