@@ -16,15 +16,7 @@ darkmode: true
 
 # Social links
 github_username:  EdgarAhmed
-# stackoverflow_username: "00000001"
-# dribbble_username: jekyll
-# facebook_username: jekyll
-# flickr_username: jekyll
 linkedin_username: edgar-ahmed-mora
-# xing_username: jekyll
-# pinterest_username: jekyll
-# googleplus_username: +jekyll
-# orcid_username: 0000-0000-0000-0000
 
 # Additional icon links
 additional_links:
@@ -32,21 +24,9 @@ additional_links:
     icon: "fab fa-linkedin"
     url: "https://www.linkedin.com/in/edgar-ahmed-mora/?locale=en_US"
 
-# - title: another link
-#   icon: font awesome brand icon name (eg. fab fa-twitter) (https://fontawesome.com/icons?d=gallery&m=free)
-#   url: Link url (eg. https://google.com)
-
-# Google Analytics and Tag Manager
-# Using more than one of these may cause issues with reporting
-# gtm: "GTM-0000000"
-# gtag: "UA-00000000-0"
-# google_analytics: "UA-00000000-0"
-
 # About Section
-# about_title: About Me
 about_profile_image: images/profile.jpg
-about_content: | # this will include new lines to allow paragraphs
-
+about_content: |
   Hi, my name is Edgar and I'm a Business Analyst with a strong passion for data analytics. Since deciding to pursue a career in data, I have been fortunate to work with consulting companies alongside a great number of fantastic professionals. I have worked at several companies, where I gained strong teamwork and leadership skills.
 
   Although I believe I still have a long way to go and a lot to learn, I am most skilled in <mark>Power BI</mark>, as it has been my daily tool for the last couple of years. I adapt well to team environments and I am comfortable working in in-person, hybrid, or remote formats. I am
@@ -62,8 +42,8 @@ about_content: | # this will include new lines to allow paragraphs
 
   
 content:
-  - title: "<strong>Experience</strong>" # Title for the section
-    layout: list # Type of content section (list/text)
+  - title: "<strong>Experience</strong>"
+    layout: list
     content:
     - layout: left
       title: Aliando
@@ -72,7 +52,7 @@ content:
       caption: October 2024 - Present
       quote: >
         Solving 21st century problems by digging holes and making game changing products like the *not a flamethrower*
-      description: | # this will include new lines to allow paragraphs
+      description: |
         Every company needs its networks properly administered and The Boring Company is no exception. Digging holes is hard and I play my part making sure the whole company stays connected. I lead a team of 5 people and enjoy driving the company to try new technologies.
 
     - layout: left
@@ -144,28 +124,24 @@ content:
       sub_title: Universidad Europea de Madrid | Madrid, Spain.
       caption: 2013
   
-  - title: "<strong>Projects</strong>" # Title for the section
-    layout: list # Type of content section (list/text)
+  - title: "<strong>Projects</strong>"
+    layout: list
     content:
       - layout: top-middle
         title: Super awesome project
         link: github.com/sproogen
-        # link_text: Project Website
         additional_links:
           - title:  sproogen/modern-resume-theme
             icon: fab fa-github
             url: github.com/sproogen/modern-resume-theme
-          # - title:  Github page for project (eg. sproogen/modern-resume-theme)
-          #   icon: fab fa-github
-          #   url: Link to project (eg. sproogen.github.io/modern-resume-theme)
         quote: >
           This is probably one of the greatest apps ever created, if you don't agree you're probably wrong.
-        description: | # this will include new lines to allow paragraphs
+        description: |
           I started this project as a way if learning <mark>React</mark> and it has since grown into a fully fledged app. I have learned many skills through this and been I'm very proud of having this in my portfolio. If you don't have a project as awesome as this I would advise you make one.
           
   - title: "<strong>A bit more about me</strong>" 
-    layout: Extra information about my profesional career, life and hobbies.
-    content: | # this will include new lines to allow paragraphs
+    layout: text
+    content: |
      As with a lot of people, traveling is in my DNA, and I have taken as many opportunities as possible to do so while studying and working. During my Bachelor's Degree, I spent two whole semesters in Coventry (UK), studying at Coventry University (2011-12).
       Later, in 2013, I thought, "I have never seen the northern lights," so I did another semester at the University of Jyväskylä (Finland), where I ended up seeing them.
       I also volunteered three years in a row with a Spanish NGO and traveled with them to Ethiopia to assist the local population.
@@ -184,7 +160,6 @@ content:
 
 # Footer
 footer_show_references: true
-# references_title: References available on request (Override references text)
 
 # Build settings
 remote_theme: sproogen/resume-theme
