@@ -47,13 +47,18 @@ content:
     content:
     - layout: left
       title: Aliando
-      link: https://myclouddoor.com/
+      link: https://aliando.com/
       sub_title: Power BI Architecture - Power BI Consultant
       caption: October 2024 - Present
       quote: >
-        Solving 21st century problems by digging holes and making game changing products like the *not a flamethrower*
+        My yellow brick road to data visualization. I'm the go-to consultant who brings data to life for my client through powerful, well-maintained Power BI dashboards.
       description: |
-        Every company needs its networks properly administered and The Boring Company is no exception. Digging holes is hard and I play my part making sure the whole company stays connected. I lead a team of 5 people and enjoy driving the company to try new technologies.
+        I work directly with my client, juggling everything from daily dashboard maintenance to digging into the data for new insights. It's a really collaborative role! A fun highlight was spearheading our big move from Tableau to Power BI, which was a great adventure.
+        Here’s a peek at what I do:
+        - Team up with my client to keep our dashboards running smoothly and evolve them as their needs change.
+        - Turn complex data into clear stories that everyone can understand and use.
+        - Take care of our Power BI environment, making sure it's accurate, fast, and helpful.
+        - Act as the bridge between technical data and real-world business questions.
 
     - layout: left
       title: Jakala
@@ -66,8 +71,7 @@ content:
         I will always have kind words for Jakala, as they gave me the chance to have my first hands-on experience 
         in the corporate world and in this field. I ended up loving working in such an amazing environment. 
         Here, I was introduced to my first clients and projects. During my time there, 
-        I worked on three different projects where I used a wide range of tools, such as Python, SQL, Looker Studio, Visual Studio Code, Tableau, and Power BI. It was like a bootcamp right after my previous bootcamp.
-        Write your role description here.  
+        I worked on three different projects where I used a wide range of tools, such as Python, SQL, Looker Studio, Visual Studio Code, Tableau, and Power BI. It was like a bootcamp right after my previous bootcamp. 
         
         Task and responsabilities include:  
         - Designed dashboards in Power BI and Tableau.
@@ -97,7 +101,7 @@ content:
       quote: >
         As crazy as it might look I had my own private clinic for almost two years — surprising, I know! 
       description: | 
-        I wanted to know what it felt like to be my own boss, and at the end of 2022 I took the reins of Fisanx, a small wellbeing clinic in Madrid. I was fortunate enough to grow it into a five-member team, working hand in hand with them every day to provide the best treatment we could deliver.
+        I wanted to know what it felt like to be my own boss, and at the end of 2022 I took the reins of Fisanx, a small wellbeing clinic in Madrid. I was fortunate enough to grow it into a five-member team, working hand to hand with them every day to provide the best treatment we could deliver.
   
         Task and responsabilites:  
         - Managed daily operations of the clinic  
@@ -124,7 +128,7 @@ content:
       sub_title: Universidad Europea de Madrid | Madrid, Spain.
       caption: 2013
       description: |
-        Everyone has a first love, or a first passion but first does not mean the best or the right one for the rest of your live. This is what happened to me and with physiotherapy. I had a good time while studing it, it allowed me to go abroad several times which enriched me enormusly but I knew it was not something I wanted to do the rest of my life. 
+        Everyone has a first love, or a first passion but first does not mean the best or the right one for the rest of your life. This is what happened to me and with physiotherapy. I had a good time while studing it, it allowed me to go abroad several times which enriched me enormusly but I knew it was not something I wanted to do the rest of my life. 
   
   - title: "<strong>Projects</strong>"
     layout: list
