@@ -1,0 +1,39 @@
+name: Daily Scraping Job
+
+on:
+  schedule:
+    # Ejecuta diariamente a las 8:00 UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch:  # Permite ejecución manual
+
+jobs:
+  run-scraping:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install nbconvert papermill
+        
+    - name: Execute Jupyter Notebook
+      run: |
+        # Instala el kernel si es necesario
+        python -m ipykernel install --user --name=python3
+        
+        # Ejecuta el notebook con papermill
+        papermill 03_scraping_mediamark_ebooks.ipynb output.ipynb
+        
+    - name: Upload results (opcional)
+      uses: actions/upload-artifact@v3
+      with:
+        name: scraping-output
+        path: output.ipynb
