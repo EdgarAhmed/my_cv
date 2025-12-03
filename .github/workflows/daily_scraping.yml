@@ -30,7 +30,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install -r scraping_web/requirements.txt  # ← RUTA CORREGIDA
+        pip install -r requirements.txt  # ← ESTÁ EN LA RAÍZ
         pip install nbconvert papermill ipykernel
         
     - name: Execute Jupyter Notebook
@@ -38,7 +38,7 @@ jobs:
         # Instala el kernel
         python -m ipykernel install --user --name=python3
         
-        # Ejecuta el notebook
+        # Ejecuta el notebook (en scraping_web/)
         papermill scraping_web/03_scraping_mediamark_ebooks.ipynb output.ipynb --execution-timeout=3600
         
     - name: Upload results
@@ -50,3 +50,9 @@ jobs:
           *.csv
           *.xlsx
         retention-days: 7
+        
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ El scraping de MediaMarkt ha fallado"
+        echo "Revisa los logs para más detalles"
