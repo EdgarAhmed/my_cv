@@ -1,0 +1,64 @@
+name: Daily Scraping Job
+
+on:
+  schedule:
+    # Ejecuta diariamente a las 8:00 UTC (9:00 hora España)
+    - cron: '0 8 * * *'
+  workflow_dispatch:  # Permite ejecución manual
+
+jobs:
+  run-scraping:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install Chrome and ChromeDriver
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+        wget -q -O /tmp/chromedriver.zip https://storage.googleapis.com/chrome-for-testing-public/120.0.6099.109/linux64/chromedriver-linux64.zip
+        unzip /tmp/chromedriver.zip -d /tmp/
+        sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
+        chmod +x /usr/local/bin/chromedriver
+        
+    - name: Verify Chrome installation
+      run: |
+        google-chrome --version
+        chromedriver --version
+        
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install nbconvert papermill ipykernel
+        
+    - name: Execute Jupyter Notebook
+      run: |
+        # Instala el kernel
+        python -m ipykernel install --user --name=python3
+        
+        # Ejecuta el notebook con papermill
+        papermill 03_scraping_mediamark_ebooks.ipynb output.ipynb --execution-timeout=3600
+        
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: scraping-output
+        path: |
+          output.ipynb
+          *.csv
+          *.xlsx
+        retention-days: 7
+        
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ El scraping de MediaMarkt ha fallado"
+        echo "Revisa los logs para más detalles"
