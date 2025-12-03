@@ -2,9 +2,8 @@ name: Daily Scraping Job
 
 on:
   schedule:
-    # Ejecuta diariamente a las 8:00 UTC (9:00 hora España)
     - cron: '0 8 * * *'
-  workflow_dispatch:  # Permite ejecución manual
+  workflow_dispatch:
 
 jobs:
   run-scraping:
@@ -12,10 +11,10 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
         
@@ -28,15 +27,10 @@ jobs:
         sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
         chmod +x /usr/local/bin/chromedriver
         
-    - name: Verify Chrome installation
-      run: |
-        google-chrome --version
-        chromedriver --version
-        
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r scraping_web/requirements.txt  # ← RUTA CORREGIDA
         pip install nbconvert papermill ipykernel
         
     - name: Execute Jupyter Notebook
@@ -44,22 +38,15 @@ jobs:
         # Instala el kernel
         python -m ipykernel install --user --name=python3
         
-        # Ejecuta el notebook con papermill
-        # Añade timeout largo para scraping
-        papermill 03_scraping_mediamark_ebooks.ipynb output.ipynb --execution-timeout=3600
+        # Ejecuta el notebook
+        papermill scraping_web/03_scraping_mediamark_ebooks.ipynb output.ipynb --execution-timeout=3600
         
     - name: Upload results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: scraping-output
         path: |
           output.ipynb
-          *.csv  # Sube también archivos CSV si tu notebook los genera
+          *.csv
           *.xlsx
         retention-days: 7
-        
-    - name: Notify on failure
-      if: failure()
-      run: |
-        echo "❌ El scraping de MediaMarkt ha fallado"
-        echo "Revisa los logs para más detalles"
