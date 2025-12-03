@@ -2,9 +2,8 @@ name: Daily Scraping Job
 
 on:
   schedule:
-    # Ejecuta diariamente a las 8:00 UTC (9:00 hora España)
     - cron: '0 8 * * *'
-  workflow_dispatch:  # Permite ejecución manual
+  workflow_dispatch:
 
 jobs:
   run-scraping:
@@ -28,15 +27,10 @@ jobs:
         sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
         chmod +x /usr/local/bin/chromedriver
         
-    - name: Verify Chrome installation
-      run: |
-        google-chrome --version
-        chromedriver --version
-        
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements.txt  # ← ESTÁ EN LA RAÍZ
         pip install nbconvert papermill ipykernel
         
     - name: Execute Jupyter Notebook
@@ -44,8 +38,8 @@ jobs:
         # Instala el kernel
         python -m ipykernel install --user --name=python3
         
-        # Ejecuta el notebook con papermill
-        papermill 03_scraping_mediamark_ebooks.ipynb output.ipynb --execution-timeout=3600
+        # Ejecuta el notebook (en scraping_web/)
+        papermill scraping_web/03_scraping_mediamark_ebooks.ipynb output.ipynb --execution-timeout=3600
         
     - name: Upload results
       uses: actions/upload-artifact@v4
