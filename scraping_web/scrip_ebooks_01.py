@@ -55,7 +55,7 @@ def configurar_google_drive():
         return service
         
     except ImportError:
-        print("❌ Módulos de Google API no instalados. Ejecuta: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib")
+        print("❌ Módulos de Google API no instalados. Instala: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib")
         return None
     except Exception as e:
         print(f"❌ Error configurando Google Drive: {e}")
@@ -182,7 +182,7 @@ def actualizar_csv_drive(df_nuevo, folder_id="17jYoslfZdmPgvbO2JjEWazHmS4r79Lw7"
                     df_combinado = pd.concat([df_existente_compatible, df_nuevo_compatible], ignore_index=True)
                     
                     # Eliminar duplicados (si los hay)
-                    df_combinado = df_combinado.drop_duplicates(subset=['nombre', 'precio'], keep='last')
+                    df_combinado = df_combinado.drop_duplicates(subset=['nombre', 'precio', 'fecha_extraccion'], keep='last')
                     
                     print(f"📈 Registros después de combinar: {len(df_combinado)}")
                     print(f"➕ Nuevos registros añadidos: {len(df_nuevo)}")
@@ -502,11 +502,13 @@ def main():
             return False
         
         # Actualizar Google Drive con append
-        if os.environ.get('GOOGLE_CREDENTIALS_JSON'):
-            print("\n🔄 Actualizando Google Drive...")
-            actualizar_csv_drive(df)
+        print("\n🔄 Actualizando Google Drive...")
+        drive_actualizado = actualizar_csv_drive(df)
+        
+        if drive_actualizado:
+            print("✅ Google Drive actualizado exitosamente")
         else:
-            print("⚠️  Credenciales de Google Drive no encontradas. Omitiendo actualización en Drive.")
+            print("⚠️  No se pudo actualizar Google Drive (puede ser falta de credenciales)")
         
         print("\n" + "="*60)
         print("RESUMEN EJECUCIÓN")
