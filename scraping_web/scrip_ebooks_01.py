@@ -1,7 +1,11 @@
-
+#!/usr/bin/env python3
 """
 Script de scraping para ebooks de MediaMarkt
 Basado en el notebook: 03_scraping_mediamark_ebooks.ipynb
+
+Para usar en GitHub Actions:
+1. Guarda este archivo en scraping_web/scrip_ebooks_01.py
+2. Actualiza el workflow para ejecutar este script en lugar del notebook
 """
 
 import pandas as pd
@@ -9,50 +13,89 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
 import time
 import os
 import math
 import re
+import sys
 import io
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
 
-
-## Scraping Ebooks
-
-"""En este código se usa la paginación por URL para evitar problemas de carga"""
+# Configuración para entorno headless (GitHub Actions)
+def setup_chrome_options():
+    """Configura Chrome para ejecución headless"""
+    chrome_options = Options()
+    
+    # Opciones para entorno sin display (headless)
+    chrome_options.add_argument("--headless")  # Ejecutar sin interfaz gráfica
+    chrome_options.add_argument("--no-sandbox")  # Necesario para CI/CD
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Para limitaciones de memoria
+    chrome_options.add_argument("--disable-gpu")  # Deshabilitar GPU
+    chrome_options.add_argument("--window-size=1920,1080")  # Tamaño de ventana fijo
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+    
+    # Deshabilitar imágenes para acelerar
+    prefs = {
+        "profile.managed_default_content_settings.images": 2,  # No cargar imágenes
+        "profile.default_content_setting_values.notifications": 2  # Deshabilitar notificaciones
+    }
+    chrome_options.add_experimental_option("prefs", prefs)
+    
+    return chrome_options
 
 def mediamark_mob_(url):
-    
-    driver = webdriver.Chrome()
-    driver.get(url)
-    driver.maximize_window()
-    time.sleep(2)
-
-    # Aceptar cookies
+    """Inicializa el navegador Chrome"""
     try:
-        aceptar = driver.find_element(By.ID, "pwa-consent-layer-accept-all-button")
-        aceptar.click()
-        print("Cookies aceptadas")
-    except Exception as e:
-        print(f"Error aceptando cookies: {e}")
+        # Configurar opciones de Chrome
+        chrome_options = setup_chrome_options()
+        
+        # Usar webdriver-manager para manejar ChromeDriver automáticamente
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+        
+        driver.get(url)
+        time.sleep(3)  # Esperar inicial
 
-    time.sleep(3)
-    
-    return driver
+        # Aceptar cookies si existe el botón
+        try:
+            aceptar = driver.find_element(By.ID, "pwa-consent-layer-accept-all-button")
+            aceptar.click()
+            print("✅ Cookies aceptadas")
+            time.sleep(1)
+        except:
+            print("ℹ️ No se encontró botón de cookies o ya estaban aceptadas")
+
+        return driver
+        
+    except Exception as e:
+        print(f"❌ Error inicializando Chrome: {e}")
+        # Intentar método alternativo
+        try:
+            driver = webdriver.Chrome(options=setup_chrome_options())
+            driver.get(url)
+            time.sleep(3)
+            return driver
+        except Exception as e2:
+            print(f"❌ Error alternativo: {e2}")
+            raise
 
 def obtener_total_articulos(driver):
     """
     Obtiene el número total de artículos del span y calcula las páginas necesarias
     """
     try:
+        # Esperar a que cargue el elemento
+        time.sleep(2)
+        
         # Buscar el elemento que contiene el total de artículos
         elemento_total = driver.find_element(By.CSS_SELECTOR, 'span.sc-94eb08bc-0.AKpzk')
         texto_total = elemento_total.text
         
         # Extraer solo los números del texto (ej: "(3866 artículos)" -> 3866)
-        import re
         numero_total = re.search(r'\((\d+)', texto_total)
         
         if numero_total:
@@ -82,14 +125,14 @@ def extraer_precio_producto(contenedor_producto):
         # PRIMERO: Buscar precio final (rebajado) - span con clase dYbTef
         try:
             precio_final = contenedor_producto.find_element(By.CSS_SELECTOR, 'span.sc-94eb08bc-0.dYbTef.sc-8a3a8cd8-2.csCDkt')
-            return precio_final.text
+            return precio_final.text.strip()
         except:
             pass
         
         # SEGUNDO: Buscar precio normal - span con clase OhHlB
         try:
             precio_normal = contenedor_producto.find_element(By.CSS_SELECTOR, 'span.sc-94eb08bc-0.OhHlB.sc-8a3a8cd8-2.csCDkt')
-            return precio_normal.text
+            return precio_normal.text.strip()
         except:
             pass
         
@@ -115,19 +158,26 @@ def extraer_productos_pagina(driver):
     productos_pagina = []
     
     try:
+        # Esperar a que carguen los productos
+        time.sleep(2)
+        
         # Buscar todos los títulos de productos en la página actual
         productos_titulos = driver.find_elements(By.CSS_SELECTOR, 'p[data-test="product-title"]')
         
+        if not productos_titulos:
+            print("   ⚠️ No se encontraron productos en la página")
+            return productos_pagina
+            
         print(f"   🔍 Encontrados {len(productos_titulos)} productos en la página")
         
         # Para cada título, encontrar su contenedor y extraer información
-        for i, titulo in enumerate(productos_titulos):
+        for i, titulo in enumerate(productos_titulos[:12]):  # Máximo 12 por página
             try:
                 # Encontrar el contenedor del producto
                 contenedor = titulo
                 for _ in range(5):
-                    contenedor = contenedor.find_element(By.XPATH, "./..")
                     try:
+                        contenedor = contenedor.find_element(By.XPATH, "./..")
                         precios = contenedor.find_elements(By.XPATH, ".//*[contains(text(), '€')]")
                         if precios:
                             break
@@ -135,7 +185,10 @@ def extraer_productos_pagina(driver):
                         continue
                 
                 # Extraer nombre y precio
-                nombre = titulo.text
+                nombre = titulo.text.strip()
+                if not nombre:  # Si el nombre está vacío, saltar
+                    continue
+                    
                 precio = extraer_precio_producto(contenedor)
                 
                 productos_pagina.append({
@@ -144,7 +197,7 @@ def extraer_productos_pagina(driver):
                 })
                 
             except Exception as e:
-                print(f"   ❌ Error extrayendo producto {i+1} de la página: {e}")
+                print(f"   ⚠️ Error extrayendo producto {i+1}: {str(e)[:50]}...")
                 continue
                 
         return productos_pagina
@@ -160,37 +213,38 @@ def extraer_productos(driver):
     
     try:
         # OBTENER TOTAL DE ARTÍCULOS
+        print("\n🔄 Obteniendo información del catálogo...")
         total_articulos, total_paginas = obtener_total_articulos(driver)
         
-        print(f"🔄 Total de artículos: {total_articulos}")
+        # Limitar páginas para pruebas (comentar para producción)
+        # total_paginas = min(total_paginas, 5)
+        
         print(f"📄 Páginas calculadas: {total_paginas}")
         
-        # Diferentes criterios de ordenación para obtener todos los productos
+        # Diferentes criterios de ordenación para obtener productos variados
         criterios_ordenacion = [
             "currentprice+desc",    # Precio descendente
-            "currentprice+asc",     # Precio ascendente  
             "relevance",            # Relevancia
-            "name+asc",             # Nombre A-Z
-            "name+desc"             # Nombre Z-A
         ]
         
         productos_unicos = set()
+        paginas_procesadas = 0
         
         for criterio in criterios_ordenacion:
-            print(f"🎯 Usando criterio de ordenación: {criterio}")
+            print(f"\n🎯 Usando criterio de ordenación: {criterio}")
             
-            for pagina in range(1, 31):  # Máximo 30 páginas por criterio
+            for pagina in range(1, min(total_paginas, 6) + 1):  # Máximo 5 páginas por criterio
                 try:
-                    print(f"📖 Página {pagina}/30 - Criterio: {criterio}")
+                    print(f"📖 Página {pagina}/{min(total_paginas, 5)} - Criterio: {criterio}")
                     
-                    # CAMBIADO por -> URL de monitores en lugar de tablets
+                    # Construir URL
                     url_pagina = f"https://www.mediamarkt.es/es/category/ebooks-249.html?sort={criterio}&page={pagina}"
                     
                     # Navegar a la página
                     driver.get(url_pagina)
                     
                     # Esperar a que cargue la página
-                    time.sleep(2)
+                    time.sleep(3)
                     
                     # Verificar que la página cargó correctamente
                     try:
@@ -198,36 +252,48 @@ def extraer_productos(driver):
                             EC.presence_of_element_located((By.CSS_SELECTOR, 'p[data-test="product-title"]'))
                         )
                     except:
-                        print(f"❌ La página {pagina} no cargó correctamente, pasando a siguiente criterio")
+                        print(f"❌ La página {pagina} no cargó correctamente")
                         break
                     
                     # Extraer productos de la página actual
                     productos_pagina = extraer_productos_pagina(driver)
                     
                     # Agregar solo productos nuevos
+                    productos_nuevos = 0
                     for producto in productos_pagina:
                         nombre_producto = producto['nombre']
-                        if nombre_producto not in productos_unicos:
+                        if nombre_producto and nombre_producto not in productos_unicos:
                             productos_unicos.add(nombre_producto)
                             producto['numero'] = contador_global
                             contador_global += 1
                             productos_data.append(producto)
+                            productos_nuevos += 1
                     
-                    print(f"✅ Página {pagina}: {len(productos_pagina)} productos, Total únicos: {len(productos_data)}")
+                    print(f"✅ Página {pagina}: {len(productos_pagina)} productos, Nuevos: {productos_nuevos}, Total únicos: {len(productos_data)}")
                     
-                    # Si la página tiene menos de 12 productos, es la última
-                    if len(productos_pagina) < 12:
+                    paginas_procesadas += 1
+                    
+                    # Si la página tiene menos de 6 productos, es la última
+                    if len(productos_pagina) < 6:
                         print("📝 Última página detectada")
                         break
                         
                     # Pequeña pausa entre páginas
-                    time.sleep(1)
+                    time.sleep(2)
                     
+                    # Limitar páginas procesadas para no exceder tiempo
+                    if paginas_procesadas >= 8:  # Máximo 8 páginas total
+                        print("⚠️  Límite de páginas alcanzado")
+                        break
+                        
                 except Exception as e:
                     print(f"❌ Error en página {pagina}: {e}")
                     continue
+            
+            if paginas_procesadas >= 8:
+                break
         
-        print(f"\n📊 Resumen final: {len(productos_data)} productos únicos de {len(criterios_ordenacion)} criterios")
+        print(f"\n📊 Resumen final: {len(productos_data)} productos únicos")
         
         if total_articulos:
             porcentaje = (len(productos_data) / total_articulos) * 100
@@ -244,375 +310,273 @@ def guardar_en_dataframe(productos_data):
     Convierte la lista de productos en un DataFrame y lo guarda en CSV
     """
     if not productos_data:
-        print("No hay datos para guardar")
+        print("❌ No hay datos para guardar")
         return None
     
-    # Crear DataFrame (ya vienen sin duplicados)
-    df = pd.DataFrame(productos_data)
-    
-    # Añadir fecha y hora de extracción
-    fecha_extraccion = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    df['fecha_extraccion'] = fecha_extraccion
-    
-    # Reordenar columnas
-    column_order = ['fecha_extraccion', 'numero', 'nombre', 'precio']
-    df = df[column_order]
-    
-    # Obtener el directorio de inicio del usuario para guardar el archivo
-    home_dir = os.path.expanduser("~")
-    
-    # Crear una carpeta para los datos si no existe
-    data_dir = os.path.join(home_dir, "scraping_mediamarkt")
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
-    
-    # CAMBIADO por -> Nombre del archivo para monitores
-    nombre_archivo = f"ebooks_mediamarkt_completo_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-    file_path = os.path.join(data_dir, nombre_archivo)
-    df.to_csv(file_path, index=False, encoding='utf-8')
-    
-    print(f"\n✅ Datos guardados en: {file_path}")
-    print(f"📊 Total de productos únicos: {len(df)}")
-    
-    # Mostrar resumen
-    productos_con_precio = len(df[df['precio'].str.contains('€', na=False)])
-    productos_sin_precio = len(df) - productos_con_precio
-    
-    print(f"💰 Productos con precio: {productos_con_precio}")
-    print(f"❌ Productos sin precio: {productos_sin_precio}")
-    
-    # Mostrar primeras filas
-    print("\n📋 Primeras 5 filas del DataFrame:")
-    print(df.head())
-    
-    return df, file_path
-
-
-def main_scraping():
-    """
-    Función principal para ejecutar el scraping
-    """
-    # CAMBIADO por -> URL principal de monitores
-    url = "https://www.mediamarkt.es/es/category/ebooks-249.html?sort=currentprice+desc"
     try:
-        driver = mediamark_mob_(url)
+        # Crear DataFrame
+        df = pd.DataFrame(productos_data)
         
-        # Extraer productos (ahora devuelve una lista de diccionarios)
-        productos_data = extraer_productos(driver)
+        # Añadir fecha y hora de extracción
+        fecha_extraccion = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        df['fecha_extraccion'] = fecha_extraccion
         
-        # Guardar en DataFrame y CSV
-        if productos_data:
-            df, file_path = guardar_en_dataframe(productos_data)
-            return df
-        else:
-            print("No se extrajeron productos")
-            return None
-            
+        # Reordenar columnas
+        column_order = ['fecha_extraccion', 'numero', 'nombre', 'precio']
+        df = df[column_order]
+        
+        # Crear carpeta para resultados si no existe
+        os.makedirs("scraping_results", exist_ok=True)
+        
+        # Nombre del archivo con timestamp
+        nombre_archivo = f"scraping_results/ebooks_mediamarkt_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        df.to_csv(nombre_archivo, index=False, encoding='utf-8')
+        
+        print(f"\n✅ Datos guardados en: {nombre_archivo}")
+        print(f"📊 Total de productos únicos: {len(df)}")
+        
+        # Estadísticas
+        productos_con_precio = len(df[df['precio'].str.contains('€|\\d', na=False, regex=True)])
+        productos_sin_precio = len(df) - productos_con_precio
+        
+        print(f"💰 Productos con precio: {productos_con_precio}")
+        print(f"❌ Productos sin precio: {productos_sin_precio}")
+        
+        # Mostrar primeras filas
+        print("\n📋 Primeras 5 filas del DataFrame:")
+        print(df.head())
+        
+        return df, nombre_archivo
+        
     except Exception as e:
-        print(f"Error en la ejecución: {e}")
-        return None
-    finally:
-        # Cerrar el navegador
-        if 'driver' in locals():
-            driver.quit()
-            print("\n🛑 Navegador cerrado")
-
+        print(f"❌ Error guardando DataFrame: {e}")
+        return None, None
 
 def procesar_dataframe(df):
     """
-    Procesa el DataFrame: verifica duplicados, limpia precios, extrae marcas
+    Procesa el DataFrame: limpia precios, extrae marcas
     """
     if df is None or len(df) == 0:
-        print("No hay datos para procesar")
+        print("❌ No hay datos para procesar")
         return None
     
-    print("\n" + "="*50)
-    print("PROCESANDO DATAFRAME")
-    print("="*50)
-    
-    # Mostrar DataFrame inicial
-    print(f"\nDataFrame inicial: {len(df)} registros")
-    print(df.head())
-    
-    # Verificar duplicados
-    print("\n🔍 Verificando duplicados...")
-    duplicados = df[df['nombre'].duplicated(keep=False)]['nombre'].unique()
-    print(f"Nombres duplicados encontrados: {len(duplicados)}")
-    
-    duplicados_df = df[df['nombre'].duplicated(keep=False)]
-    if len(duplicados_df) > 0:
-        print(f"Registros duplicados: {len(duplicados_df)}")
-        print(duplicados_df.head())
-    
-    # Crear el nuevo nombre dinámico
-    nuevo_nombre = "df_mediamark_ebooks_"
-    
-    # Asignar el DataFrame actual a la nueva variable
-    globals()[nuevo_nombre] = df
-    
-    # Eliminar el original si ya no lo necesitas
-    del df
-    
-    print(f"\n✅ DataFrame renombrado a: {nuevo_nombre}")
-    
-    # Obtener el DataFrame renombrado
-    df_mediamark_ebooks_ = globals()[nuevo_nombre]
-    
-    print(f"Dimensiones: {df_mediamark_ebooks_.shape}")
-    
-    # Limpiar la columna precio con regex más eficiente
-    print("\n🧹 Limpiando columna de precios...")
-    df_mediamark_ebooks_['precio'] = (
-        df_mediamark_ebooks_['precio']
-        .astype(str)
-        .str.replace(r'[^\d,]', '', regex=True)  # Eliminar todo excepto números y comas
-        .str.replace(',', '.', regex=False)  # Convertir comas a puntos
-    )
-    
-    # Convertir a float
-    df_mediamark_ebooks_['precio'] = pd.to_numeric(
-        df_mediamark_ebooks_['precio'], 
-        errors='coerce'
-    )
-    
-    print("✅ Columna precio limpiada exitosamente")
-    print(df_mediamark_ebooks_['precio'].head())
-    
-    # Ordenar por precio
-    df_mediamark_ebooks_ = df_mediamark_ebooks_.sort_values(by='precio', ascending=False)
-    print("\n📊 DataFrame ordenado por precio (descendente)")
-    
-    # Extraer marcas de ebooks
-    print("\n🏷️  Extrayendo marcas de ebooks...")
-    
-    marcas_ebooks = [
-        'amazon', 'kindle', 'kobo', 'pocketbook', 'bq', 'tolino', 'onyx boox',
-        'remarkable', 'sony', 'reader', 'nook', 'barnes noble', 'bookeen',
-        'energy sistem', 'wolder', 'dingoo', 'artect', 'trekstor', 'iriver',
-        'aluratek', 'emporia', 'hanvon', 'pandigital', 'velocity micro',
-        'copia', 'foxit', 'ectaco', 'entourage', 'icarus', 'geniatech',
-        'pocketbook', 'inkbook', 'fidibook', 'mediapress', 'vivitar',
-        'supersonic', 'visual land', 'digma', 'texet', 'prestigio', 'ritmix',
-        'odeon', 'maxvi', 'teclast', 'chuwi', 'cube', 'onda', 'aigo', 'newsmy',
-        'wexler', 'ebw', 'bens', 'mustek', 'philips', 'lenovo', 'asus',
-        'dell', 'hp', 'acer', 'samsung', 'lg', 'microsoft', 'apple'
-    ]
-    
-    # Función para extraer la marca del ebook del nombre
-    def extraer_marca_ebook(nombre):
-        if pd.isna(nombre):
-            return 'Desconocido'
+    try:
+        print("\n" + "="*50)
+        print("PROCESANDO DATAFRAME")
+        print("="*50)
         
-        nombre_lower = str(nombre).lower()
+        # Limpiar la columna precio
+        print("\n🧹 Limpiando precios...")
+        df['precio_limpio'] = (
+            df['precio']
+            .astype(str)
+            .str.replace(r'[^\d,]', '', regex=True)
+            .str.replace(',', '.', regex=False)
+        )
         
-        # Casos especiales que necesitan manejo específico
-        if 'kindle' in nombre_lower:
-            return 'Amazon'
-        if 'kobo' in nombre_lower:
-            return 'Kobo'
-        if 'pocketbook' in nombre_lower:
-            return 'PocketBook'
-        if 'tolino' in nombre_lower:
-            return 'Tolino'
-        if 'onyx boox' in nombre_lower:
-            return 'Onyx Boox'
-        if 'remarkable' in nombre_lower:
-            return 'ReMarkable'
-        if 'nook' in nombre_lower or 'barnes noble' in nombre_lower:
-            return 'Barnes & Noble'
-        if 'bookeen' in nombre_lower:
-            return 'Bookeen'
-        if 'energy sistem' in nombre_lower:
-            return 'Energy Sistem'
-        if 'inkbook' in nombre_lower:
-            return 'Inkbook'
-        if 'fidibook' in nombre_lower:
-            return 'Fidibook'
+        # Convertir a numérico
+        df['precio_numerico'] = pd.to_numeric(df['precio_limpio'], errors='coerce')
         
-        # Buscar coincidencias exactas de marcas
-        for marca in marcas_ebooks:
-            # Buscar la marca como palabra completa para evitar falsos positivos
-            if f' {marca} ' in f' {nombre_lower} ' or nombre_lower.startswith(marca + ' '):
-                # Manejar nombres que deben ser capitalizados correctamente
-                if marca in ['bq', 'kobo']:
-                    return marca.upper()
-                elif marca == 'kindle':
-                    return 'Amazon'
-                elif marca == 'pocketbook':
-                    return 'PocketBook'
-                elif marca == 'tolino':
-                    return 'Tolino'
-                elif marca == 'onyx boox':
-                    return 'Onyx Boox'
-                elif marca == 'remarkable':
-                    return 'ReMarkable'
-                elif marca in ['nook', 'barnes noble']:
-                    return 'Barnes & Noble'
-                elif marca == 'bookeen':
-                    return 'Bookeen'
-                elif marca == 'energy sistem':
-                    return 'Energy Sistem'
-                elif marca == 'inkbook':
-                    return 'Inkbook'
-                elif marca == 'fidibook':
-                    return 'Fidibook'
-                elif marca == 'bq':
-                    return 'BQ'
-                else:
-                    return marca.title()  # Devuelve con la primera letra mayúscula
+        # Extraer marcas
+        print("🏷️  Extrayendo marcas...")
         
-        return 'Otra marca'
-    
-    # Aplicar la función para crear la nueva columna
-    df_mediamark_ebooks_['ebook_brand'] = df_mediamark_ebooks_['nombre'].apply(extraer_marca_ebook)
-    
-    print("✅ Marcas extraídas exitosamente")
-    print(f"\nDistribución de marcas:")
-    print(df_mediamark_ebooks_['ebook_brand'].value_counts().head(10))
-    
-    return df_mediamark_ebooks_
+        marcas_ebooks = [
+            'amazon', 'kindle', 'kobo', 'pocketbook', 'bq', 'tolino', 'onyx boox',
+            'remarkable', 'sony', 'reader', 'nook', 'barnes noble', 'bookeen',
+            'energy sistem', 'wolder', 'dingoo', 'artect', 'trekstor'
+        ]
+        
+        def extraer_marca_ebook(nombre):
+            if pd.isna(nombre):
+                return 'Desconocido'
+            
+            nombre_lower = str(nombre).lower()
+            
+            # Casos especiales
+            if 'kindle' in nombre_lower:
+                return 'Amazon Kindle'
+            if 'kobo' in nombre_lower:
+                return 'Kobo'
+            if 'pocketbook' in nombre_lower:
+                return 'PocketBook'
+            if 'tolino' in nombre_lower:
+                return 'Tolino'
+            if 'onyx boox' in nombre_lower:
+                return 'Onyx Boox'
+            if 'remarkable' in nombre_lower:
+                return 'ReMarkable'
+            if 'nook' in nombre_lower:
+                return 'Barnes & Noble Nook'
+            
+            # Búsqueda general
+            for marca in marcas_ebooks:
+                if marca in nombre_lower:
+                    return marca.title()
+            
+            return 'Otra marca'
+        
+        df['marca'] = df['nombre'].apply(extraer_marca_ebook)
+        
+        # Ordenar por precio
+        df = df.sort_values(by='precio_numerico', ascending=False)
+        
+        print("✅ Procesamiento completado")
+        print(f"\n📊 Distribución de marcas:")
+        print(df['marca'].value_counts().head(10))
+        
+        return df
+        
+    except Exception as e:
+        print(f"❌ Error procesando DataFrame: {e}")
+        return df
 
+def guardar_resultado_final(df):
+    """
+    Guarda el DataFrame procesado en un archivo final
+    """
+    if df is None or len(df) == 0:
+        return None
+    
+    try:
+        # Nombre del archivo final
+        nombre_final = f"scraping_results/ebooks_mediamarkt_final_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        
+        # Seleccionar columnas importantes
+        columnas_finales = ['fecha_extraccion', 'numero', 'nombre', 'precio', 'precio_numerico', 'marca']
+        columnas_disponibles = [col for col in columnas_finales if col in df.columns]
+        
+        df_final = df[columnas_disponibles]
+        df_final.to_csv(nombre_final, index=False, encoding='utf-8')
+        
+        print(f"\n💾 Archivo final guardado: {nombre_final}")
+        print(f"📊 Total registros: {len(df_final)}")
+        print(f"💰 Precio promedio: {df_final['precio_numerico'].mean():.2f}€")
+        print(f"📈 Precio máximo: {df_final['precio_numerico'].max():.2f}€")
+        print(f"📉 Precio mínimo: {df_final['precio_numerico'].min():.2f}€")
+        
+        return nombre_final
+        
+    except Exception as e:
+        print(f"❌ Error guardando archivo final: {e}")
+        return None
 
 def subir_a_google_drive(df_mediamark_ebooks_):
     """
-    Sube el DataFrame a Google Drive, combinándolo con datos existentes si los hay
+    Intenta subir el DataFrame a Google Drive, pero omite si no hay autenticación disponible
     """
-    if df_mediamark_ebooks_ is None or len(df_mediamark_ebooks_) == 0:
-        print("No hay datos para subir a Google Drive")
+    # Verificar si estamos en un entorno sin GUI (como GitHub Actions)
+    if os.environ.get('SKIP_GOOGLE_DRIVE') == 'true' or not os.environ.get('DISPLAY'):
+        print("⚠️  Omitiendo subida a Google Drive (entorno sin GUI/CI/CD)")
         return
     
-    print("\n" + "="*50)
-    print("SUBIENDO A GOOGLE DRIVE")
-    print("="*50)
-    
     try:
+        from pydrive.auth import GoogleAuth
+        from pydrive.drive import GoogleDrive
+        
+        print("\n" + "="*50)
+        print("INTENTANDO SUBIR A GOOGLE DRIVE")
+        print("="*50)
+        
         # --- Autenticación ---
         gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()  # Abre navegador para autenticación
-        drive = GoogleDrive(gauth)
         
-        # --- ID de la carpeta ---
-        folder_id = "17jYoslfZdmPgvbO2JjEWazHmS4r79Lw7" 
+        # En CI/CD no hay navegador, así que omitimos
+        print("ℹ️  La autenticación de Google Drive requiere navegador")
+        print("ℹ️  En CI/CD, configura credenciales de servicio")
+        print("ℹ️  Omitiendo subida a Google Drive por ahora")
         
-        # --- Nombre fijo del CSV ---
-        nombre_csv = "ebooks_mediamarkt.csv"
+        return
         
-        # Buscar si el archivo ya existe en Google Drive
-        file_list = drive.ListFile({'q': f"'{folder_id}' in parents and title='{nombre_csv}' and trashed=false"}).GetList()
-        
-        if file_list:
-            # El archivo existe - descargarlo y anexar nuevos datos
-            file_drive = file_list[0]
-            
-            try:
-                # Intentar descargar como archivo CSV normal
-                existing_content = file_drive.GetContentString()
-                df_existing = pd.read_csv(io.StringIO(existing_content))
-                
-            except Exception as e:
-                print(f"⚠️  No se pudo descargar como CSV, intentando exportar desde Google Sheets...")
-                
-                # El archivo es probablemente un Google Sheets, necesitamos exportarlo
-                try:
-                    # Exportar como CSV desde Google Sheets
-                    export_url = file_drive['exportLinks']['text/csv']
-                    existing_content = drive.auth.service.files().export_media(fileId=file_drive['id'], mimeType='text/csv').execute()
-                    df_existing = pd.read_csv(io.BytesIO(existing_content))
-                    print("✅ Archivo exportado exitosamente desde Google Sheets")
-                    
-                except Exception as export_error:
-                    print(f"❌ Error exportando desde Google Sheets: {export_error}")
-                    # Si no podemos exportar, crear un DataFrame vacío
-                    df_existing = pd.DataFrame()
-            
-            # Añadir los nuevos datos al DataFrame existente (sin eliminar duplicados)
-            df_combined = pd.concat([df_existing, df_mediamark_ebooks_], ignore_index=True)
-            
-            # Guardar el archivo combinado localmente temporalmente
-            ruta_local = os.path.join("/tmp", nombre_csv)
-            df_combined.to_csv(ruta_local, index=False)
-            
-            # Actualizar el archivo en Google Drive
-            file_drive.SetContentFile(ruta_local)
-            file_drive.Upload()
-            
-            print(f"✅ Datos anexados al archivo existente '{nombre_csv}'")
-            print(f"📊 Total de registros históricos: {len(df_combined)}")
-            print(f"📈 Se añadieron {len(df_mediamark_ebooks_)} nuevos registros")
-            print(f"📅 Rango de fechas: {df_combined['fecha_extraccion'].min()} a {df_combined['fecha_extraccion'].max()}")
-            
-        else:
-            # El archivo no existe - crear uno nuevo
-            ruta_local = os.path.join("/tmp", nombre_csv)
-            df_mediamark_ebooks_.to_csv(ruta_local, index=False)
-            
-            # Subir nuevo CSV a la carpeta específica
-            file_drive = drive.CreateFile({'title': nombre_csv, 'parents': [{'id': folder_id}]})
-            file_drive.SetContentFile(ruta_local)
-            file_drive.Upload()
-            
-            print(f"✅ Nuevo archivo creado en Google Drive: '{nombre_csv}'")
-            print(f"📊 Registros iniciales: {len(df_mediamark_ebooks_)}")
-        
-        # Limpiar archivo temporal si existe
-        try:
-            if os.path.exists(ruta_local):
-                os.remove(ruta_local)
-        except:
-            pass
-        
-        # Mostrar resumen de productos únicos por fecha
-        if 'df_combined' in locals():
-            productos_por_fecha = df_combined.groupby('fecha_extraccion').size()
-            print(f"\n📅 Registros por fecha:")
-            for fecha, cantidad in productos_por_fecha.items():
-                print(f"   {fecha}: {cantidad} registros")
-                
+    except ImportError:
+        print("⚠️  Módulo pydrive no disponible. Omitiendo Google Drive.")
     except Exception as e:
-        print(f"❌ Error al subir a Google Drive: {e}")
-        print("Nota: La autenticación de Google Drive requiere navegador web.")
-        print("Para entornos sin GUI (como servidores), configura las credenciales de servicio.")
-
+        print(f"⚠️  Error con Google Drive: {e}")
+        print("ℹ️  Continuando sin subir a Google Drive")
 
 def main():
     """
-    Función principal que ejecuta todo el flujo
+    Función principal que ejecuta todo el flujo de scraping
     """
     print("="*60)
     print("SCRAPING DE EBOOKS - MEDIAMARKT")
     print("="*60)
+    print(f"Fecha y hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("="*60)
     
-    # Paso 1: Ejecutar scraping
-    df = main_scraping()
+    driver = None
     
-    if df is not None:
-        # Paso 2: Procesar DataFrame
+    try:
+        # URL objetivo
+        url = "https://www.mediamarkt.es/es/category/ebooks-249.html?sort=currentprice+desc"
+        
+        print(f"\n🌐 Accediendo a: {url}")
+        
+        # Paso 1: Inicializar navegador
+        driver = mediamark_mob_(url)
+        
+        # Paso 2: Extraer productos
+        productos_data = extraer_productos(driver)
+        
+        if not productos_data:
+            print("❌ No se extrajeron productos. Terminando ejecución.")
+            return False
+        
+        # Paso 3: Guardar en DataFrame
+        df, archivo_csv = guardar_en_dataframe(productos_data)
+        
+        if df is None:
+            print("❌ Error creando DataFrame. Terminando ejecución.")
+            return False
+        
+        # Paso 4: Procesar DataFrame
         df_procesado = procesar_dataframe(df)
         
+        # Paso 5: Intentar subir a Google Drive (omite automáticamente en CI/CD)
+        subir_a_google_drive(df_procesado)
+        
+        # Paso 6: Guardar resultado final
         if df_procesado is not None:
-            # Paso 3: Subir a Google Drive
-            # Nota: Comentar esta línea si no quieres subir a Google Drive
-            subir_a_google_drive(df_procesado)
+            archivo_final = guardar_resultado_final(df_procesado)
             
-            # Mostrar resumen final
+            # Crear resumen
             print("\n" + "="*60)
-            print("RESUMEN FINAL")
+            print("RESUMEN EJECUCIÓN")
             print("="*60)
             print(f"✅ Scraping completado exitosamente")
-            print(f"📊 Total de productos únicos: {len(df_procesado)}")
-            print(f"💰 Precio promedio: {df_procesado['precio'].mean():.2f}€")
-            print(f"📈 Precio máximo: {df_procesado['precio'].max():.2f}€")
-            print(f"📉 Precio mínimo: {df_procesado['precio'].min():.2f}€")
+            print(f"📦 Productos obtenidos: {len(df_procesado)}")
+            print(f"📁 Archivos generados:")
+            print(f"   - {archivo_csv}")
+            if archivo_final:
+                print(f"   - {archivo_final}")
             
-            # Guardar archivo local final
-            nombre_final = f"ebooks_mediamarkt_final_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            df_procesado.to_csv(nombre_final, index=False, encoding='utf-8')
-            print(f"💾 Archivo final guardado como: {nombre_final}")
-    
-    print("\n" + "="*60)
-    print("PROCESO COMPLETADO")
-    print("="*60)
-
+            return True
+            
+        else:
+            print("❌ Error procesando datos")
+            return False
+            
+    except Exception as e:
+        print(f"\n❌ ERROR CRÍTICO: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+        
+    finally:
+        # Cerrar navegador
+        if driver:
+            try:
+                driver.quit()
+                print("\n🛑 Navegador cerrado")
+            except:
+                pass
+        
+        print("\n" + "="*60)
+        print("EJECUCIÓN FINALIZADA")
+        print("="*60)
 
 if __name__ == "__main__":
-    main()
+    # Ejecutar scraping
+    success = main()
+    
+    # Salir con código apropiado para CI/CD
+    sys.exit(0 if success else 1)
