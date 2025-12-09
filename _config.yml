@@ -29,8 +29,7 @@ about_profile_image: images/profile.jpg
 about_content: |
   Hi, my name is Edgar and I'm a Business Analyst with a strong passion for data analytics. Since deciding to pursue a career in data, I have been fortunate to work with consulting companies alongside a great number of fantastic professionals. I have worked at several companies, where I gained strong teamwork and leadership skills.
 
-  Although I believe I still have a long way to go and a lot to learn, I am most skilled in <mark>Power BI</mark>, as it has been my daily tool for the last couple of years. I adapt well to team environments and I am comfortable working in in-person, hybrid, or remote formats. I am
-  open to relocation and eager to continue developing in this field.
+  Although I believe I still have a long way to go and a lot to learn, I am most skilled in <mark>Power BI</mark>, as it has been my daily tool for the last couple of years. I adapt well to team environments and I am comfortable working in in-person, hybrid, or remote formats. I am open to relocation and eager to continue developing in this field.
 
   I feel very comfortable working with:
 
@@ -66,7 +65,7 @@ content:
         caption: February 2024 - September 2024
         quote: >
           My first hands-on experience in the corporate world!
-        description: | 
+        description: |
           I will always have kind words for Jakala, as they gave me the chance to have my first hands-on experience 
           in the corporate world and in this field. I ended up loving working in such an amazing environment. 
           Here, I was introduced to my first clients and projects. During my time there, 
@@ -85,7 +84,7 @@ content:
         caption: September 2018 - August 2023
         quote: >
           Yeah, you read it right. For five years I was a lecturer at UFV, a private university located in Madrid. 
-        description: | 
+        description: |
           For five years I was part of UFV, a private university located in Madrid. During that time, I taught diverse number of subjects related to health science. I had to do something well enough while speaking in front of large audiences, as a couple of universities invited me as a guest lecturer in Paris (Ecole d'Assas - 2020) and Vienna (St. Pölen University - 2022).
           
           Task and responsabilites include:  
@@ -99,7 +98,7 @@ content:
         caption: 2021 - 2023
         quote: >
           As crazy as it might look I had my own private clinic for almost two years — surprising, I know! 
-        description: | 
+        description: |
           I wanted to know what it felt like to be my own boss, and at the end of 2022 I took the reins of Fisanx, a small wellbeing clinic in Madrid. I was fortunate enough to grow it into a five-member team, working hand to hand with them every day to provide the best treatment we could deliver.
   
           Task and responsabilites:  
@@ -107,34 +106,48 @@ content:
           - Oversaw financial and administrative tasks  
           - Built strong relationships with patients and staff
 
-  - title: "<strong>Education</strong>" 
+  - title: "<strong>Education</strong>"
     layout: list
     content:
       - layout: left
         title: Data Analytics Bootcamp
         sub_title: IronHack | Madrid, Spain.
         caption: 2023
+        hover_info: |
+          Skills gained: Python, SQL, Power BI, Tableau, Excel, MongoDB
+          Projects completed: 3 major data analysis projects
+          Duration: 9 weeks intensive program
         description: |
-          After having a taste of what it was working as a physio I new that was not the right field for me anymore. I started playing around with python and after getting realy into it, I decided to enrol in a Data Analytics Bootcamp. I could get a broad knowledge in ETL processes, EDA, advanced statistics, and data visualization. I gained proficiency in Python, SQL, and tools like Power BI, Tableau, Excel, Google Sheets, and MongoDB, which served me greatly for my future jobs. Finanlly, after a long walkthruough I can say I found my right career path. During my training in the bootcamp, programming felt more as a hobby than a job. I do know I'm in the right path because I do not feel the dread on a Sunday eveningn knowing that tomorrow I have to go to work.
+          After having a taste of what it was working as a physio I knew that was not the right field for me anymore...
+
       - layout: left
         title: MSc. in International Development and Cooperation.
         sub_title: Universidad Pontificia de Comillas | Madrid, Spain.
         caption: 2023
+        hover_info: |
+          Focus areas: Impact finance, ethical investment
+          Thesis topic: Sustainable development in emerging economies
+          Languages: Coursework in Spanish and English
         description: |
-          I like to define myslef as curious and one of the areas that alwasy stood out for me was International Cooperation, being that the reason I enroled in a Master's program. During the Master's duration  I gained the necessary knowledge to understand the operations of both national and international organisations. Particularly intrigued and focused on impact finance and ethical and responsible investment. Alghouth I did learn a lot in a field that really (apasoinari) I could not see myself working in this field, which is one of the reasons I end-up in the data world. I guess lost of the times we learn thourgh trial and error.
+          I like to define myself as curious and one of the areas that always stood out for me was International Cooperation...
+
       - layout: left
         title: Bachelor (Honours) Degree Standard in Health Sciences (Physiotherapy).
         sub_title: Universidad Europea de Madrid | Madrid, Spain.
         caption: 2013
+        hover_info: |
+          Specializations: Sports physiotherapy, rehabilitation
+          Clinical hours: 800+ practical hours
+          Study abroad: Erasmus program in Netherlands
         description: |
-          Everyone has a first love, or a first passion but first does not mean the best or the right one for the rest of your life. This is what happened to me and with physiotherapy. I had a good time while studing it, it allowed me to go abroad several times which enriched me enormusly but I knew it was not something I wanted to do the rest of my life.
-  
+          Everyone has a first love, or a first passion but first does not mean the best or the right one for the rest of your life...
+
   - title: "<strong>Projects</strong>"
     layout: list
     content:
       - layout: top-middle
         title: My favorite projects.
-        link: 
+        link:
         additional_links:
           - title: Power BI Dashboard
             icon: fa-solid fa-chart-simple
@@ -150,7 +163,7 @@ content:
             </iframe>
           </div>
 
-  - title: "<strong>A bit more about me</strong>" 
+  - title: "<strong>A bit more about me</strong>"
     layout: text
     content: |
       As with a lot of people, traveling is in my DNA, and I have taken as many opportunities as possible to do so while studying and working. During my Bachelor's Degree, I spent two whole semesters in Coventry (UK), studying at Coventry University (2011-12).
