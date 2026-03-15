@@ -1,0 +1,50 @@
+{% for item in include.content %}
+{% assign is_last_item = forloop.last %}
+<div class="row clearfix layout layout-{{ item.layout | default: 'left' }} section-item{% unless is_last_item %} section-item-with-divider{% endunless %}">
+  <div class="col-xs-12 col-sm-4 col-print-12 details">
+    <h4>{{ item.title }}</h4>
+
+    {% if item.sub_title %}
+    <p><b>{{ item.sub_title }}</b></p>
+    {% endif %}
+
+    {% if item.caption %}
+    <p>{{ item.caption }}</p>
+    {% endif %}
+
+    {% if item.link %}
+    <p>
+      <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">
+        {% if item.link_text %}{{ item.link_text }}{% else %}{{ item.link }}{% endif %}
+      </a>
+    </p>
+    {% endif %}
+
+    {% if item.company_logo %}
+    <div class="company-logo-wrapper">
+      <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">
+        <img src="{{ item.company_logo }}" alt="{{ item.title }} logo" class="company-logo">
+      </a>
+    </div>
+    {% endif %}
+
+    {% if item.additional_links %}
+      {% for link in item.additional_links %}
+      <p>
+        <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">
+          {{ link.title }}
+        </a>
+      </p>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="col-xs-12 col-sm-8 col-print-12 content">
+    {% if item.quote %}
+    <p class="quote">{{ item.quote }}</p>
+    {% endif %}
+
+    {{ item.description | strip | markdownify }}
+  </div>
+</div>
+{% endfor %}

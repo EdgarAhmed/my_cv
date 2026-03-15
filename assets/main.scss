@@ -1,5 +1,32 @@
 ---
-# Front matter comment to ensure Jekyll properly reads file.
 ---
 
-@import 'modern-resume-theme';
+@import "modern-resume-theme";
+
+.company-logo-wrapper {
+  margin-top: 10px;
+}
+
+.company-logo {
+  width: 90px !important;
+  max-width: 90px !important;
+  height: auto !important;
+  display: block;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.company-logo-wrapper a {
+  display: inline-block;
+}
+
+.company-logo-wrapper a:hover .company-logo {
+  transform: scale(1.03);
+  cursor: pointer;
+}
+
+.section-item-with-divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+}
