@@ -10,6 +10,8 @@ name: Edgar Ahmed
 title: BI Analyst/Data Analyst
 email: edgar.ahmed89@gmail.com
 website: https://github.com/EdgarAhmed/my_cv
+url: "https://EdgarAhmed.github.io"
+baseurl: "/my_cv"
 
 # Dark Mode (true/false/never)
 darkmode: true
