@@ -31,7 +31,7 @@
   margin-bottom: 18px;
 }
 
-.whatsapp-bubble {
+..whatsapp-bubble {
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -97,19 +97,30 @@
   opacity: 0.7;
 }
 
-@media (max-width: 40px) {
+@media (max-width: 640px) {
   .whatsapp-bubble {
-    right: 12px;
-    bottom: 12px;
-    width: 35px;
+    right: 10px;
+    bottom: 10px;
+    width: 60px;
   }
 
   .whatsapp-icon-image {
-    width: 45px;
+    width: 32px;
   }
 
   .whatsapp-text {
-    font-size: 11px;
+    font-size: 9px;
+    line-height: 1.1;
+  }
+
+  .whatsapp-link {
+    gap: 4px;
+  }
+
+  .whatsapp-close {
+    top: -10px;
+    right: 2px;
+    font-size: 14px;
   }
 }
 
