@@ -4,13 +4,17 @@
   </button>
 
   <a
-    href="https://wa.me/34618720632?text=Hi%20Edgar%2C%20I%20found%20your%20website"
+    href="https://wa.me/TUNUMERO?text=Hi%20Edgar%2C%20I%20found%20your%20website"
     target="_blank"
     rel="noopener noreferrer"
     class="whatsapp-link"
     aria-label="Open WhatsApp chat"
   >
-    <i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i>
+    <img
+      src="{{ '/images/whatsapp-icon.png' | relative_url }}"
+      alt="WhatsApp"
+      class="whatsapp-icon-image"
+    >
     <span class="whatsapp-text">You can find me on WhatsApp</span>
   </a>
 </div>
@@ -31,7 +35,6 @@
       const scrollTop = window.scrollY || window.pageYOffset;
       const windowHeight = window.innerHeight;
       const docHeight = document.documentElement.scrollHeight;
-
       const scrollProgress = (scrollTop + windowHeight) / docHeight;
 
       if (scrollProgress >= 0.9 && !shown) {

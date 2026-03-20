@@ -36,15 +36,12 @@
   right: 20px;
   bottom: 20px;
   z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #1f1f1f;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  padding: 10px 14px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  width: 80px;
 }
 
 .whatsapp-bubble.hidden {
@@ -53,29 +50,39 @@
 
 .whatsapp-link {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  text-align: center;
   color: #ffffff;
   text-decoration: none;
-  font-weight: 600;
+  gap: 10px;
 }
 
 .whatsapp-link:hover {
   text-decoration: none;
-  opacity: 0.9;
+  opacity: 0.96;
 }
 
-.whatsapp-icon {
-  font-size: 18px;
-  line-height: 1;
+.whatsapp-icon-image {
+  width: 40px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.4));
 }
 
 .whatsapp-text {
-  font-size: 14px;
+  font-size: 11px;
   line-height: 1.2;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.55);
 }
 
 .whatsapp-close {
+  position: absolute;
+  top: -15px;
+  right: 6px;
   background: transparent;
   border: none;
   color: #ffffff;
@@ -83,22 +90,26 @@
   line-height: 1;
   cursor: pointer;
   padding: 0;
-  margin-right: 2px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
 .whatsapp-close:hover {
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
 @media (max-width: 640px) {
   .whatsapp-bubble {
     right: 12px;
     bottom: 12px;
-    padding: 10px 12px;
+    width: 75px;
+  }
+
+  .whatsapp-icon-image {
+    width: 45px;
   }
 
   .whatsapp-text {
-    font-size: 13px;
+    font-size: 11px;
   }
 }
 
