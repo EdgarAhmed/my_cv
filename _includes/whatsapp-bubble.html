@@ -1,0 +1,50 @@
+<div id="whatsapp-bubble" class="whatsapp-bubble hidden">
+  <button id="whatsapp-close" class="whatsapp-close" aria-label="Close WhatsApp bubble">
+    ×
+  </button>
+
+  <a
+    href="https://wa.me/34618720632?text=Hi%20Edgar%2C%20I%20found%20your%20website"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="whatsapp-link"
+    aria-label="Open WhatsApp chat"
+  >
+    <i class="fab fa-whatsapp whatsapp-icon" aria-hidden="true"></i>
+    <span class="whatsapp-text">You can find me on WhatsApp</span>
+  </a>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const bubble = document.getElementById("whatsapp-bubble");
+    const closeBtn = document.getElementById("whatsapp-close");
+
+    if (!bubble || !closeBtn) return;
+
+    let dismissed = false;
+    let shown = false;
+
+    function toggleBubbleOnScroll() {
+      if (dismissed) return;
+
+      const scrollTop = window.scrollY || window.pageYOffset;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      const scrollProgress = (scrollTop + windowHeight) / docHeight;
+
+      if (scrollProgress >= 0.9 && !shown) {
+        bubble.classList.remove("hidden");
+        shown = true;
+      }
+    }
+
+    closeBtn.addEventListener("click", function () {
+      bubble.classList.add("hidden");
+      dismissed = true;
+    });
+
+    window.addEventListener("scroll", toggleBubbleOnScroll);
+  });
+</script>

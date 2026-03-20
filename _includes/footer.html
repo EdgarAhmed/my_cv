@@ -1,0 +1,11 @@
+<p class="custom-footer-text">
+  {{ site.name | escape }} -
+  <a href="mailto:{{ site.email | escape }}" class="custom-footer-link">
+    {{ site.email | escape }}
+  </a>
+  {%- if site.footer_show_references -%}
+    &nbsp;- {{ site.references_title | default: "References available on request" }}
+  {%- endif -%}
+</p>
+
+{% include whatsapp-bubble.html %}
