@@ -1,0 +1,17 @@
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/eventmachine-1.2.7/ext/fastfilereader
+/Users/edgarahmed/.rbenv/versions/3.1.6/bin/ruby -I /Users/edgarahmed/.rbenv/versions/3.1.6/lib/ruby/3.1.0 extconf.rb
+creating Makefile
+
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20260323-4211-itseq2 sitelibdir\=./.gem.20260323-4211-itseq2 clean
+
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20260323-4211-itseq2 sitelibdir\=./.gem.20260323-4211-itseq2
+compiling mapper.cpp
+compiling rubymain.cpp
+linking shared-object fastfilereaderext.bundle
+ld: warning: ignoring duplicate libraries: '-lruby.3.1'
+
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20260323-4211-itseq2 sitelibdir\=./.gem.20260323-4211-itseq2 install
+/usr/bin/install -c -m 0755 fastfilereaderext.bundle ./.gem.20260323-4211-itseq2

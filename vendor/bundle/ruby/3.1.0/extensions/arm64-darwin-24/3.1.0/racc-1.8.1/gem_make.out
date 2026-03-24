@@ -1,0 +1,16 @@
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+/Users/edgarahmed/.rbenv/versions/3.1.6/bin/ruby -I /Users/edgarahmed/.rbenv/versions/3.1.6/lib/ruby/3.1.0 extconf.rb
+creating Makefile
+
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260323-4211-pvnxmu sitelibdir\=./.gem.20260323-4211-pvnxmu clean
+
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260323-4211-pvnxmu sitelibdir\=./.gem.20260323-4211-pvnxmu
+compiling cparse.c
+linking shared-object racc/cparse.bundle
+ld: warning: ignoring duplicate libraries: '-lruby.3.1'
+
+current directory: /Users/edgarahmed/Desktop/Cosas_Data/my_cv/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260323-4211-pvnxmu sitelibdir\=./.gem.20260323-4211-pvnxmu install
+/usr/bin/install -c -m 0755 cparse.bundle ./.gem.20260323-4211-pvnxmu/racc
