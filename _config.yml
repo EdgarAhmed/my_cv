@@ -67,11 +67,22 @@ content:
     layout: list
     content:
       - layout: left
+        title: Devoteam
+        link: https://www.devoteam.com/
+        company_logo: images/devoteam.jpg
+        sub_title: PowerBI Analyst
+        caption: June 2026 - Present
+        quote: >
+          Embarking on a new journey at Devoteam, gaining fresh expertise in a dynamic consulting environment.
+        description: |
+          I currently work at Devoteam, a well-established French consulting firm with a strong presence across Europe. In my role, I support users with their daily incidents, troubleshooting and resolving issues across a wide array of Power BI dashboards. The work often feels like being a detective — following the data trail until I uncover the root cause of a problem. I use Power BI, Power Query, DAX, Google Cloud Platform (GCP), and SQL on a daily basis to diagnose and fix issues efficiently.
+
+      - layout: left
         title: Aliando
         link: https://aliando.com/
         company_logo: images/aliando.jpg
         sub_title: Power BI Consultant
-        caption: October 2024 - Present
+        caption: October 2024 - June 2026
         quote: >
           My yellow brick road to data visualization. I'm the go-to consultant who brings data to life for my client through powerful, well-maintained Power BI dashboards.
         description: |
