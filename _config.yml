@@ -70,12 +70,19 @@ content:
         title: Devoteam
         link: https://www.devoteam.com/
         company_logo: images/devoteam.jpg
-        sub_title: PowerBI Analyst
+        sub_title: Power BI Analyst
         caption: June 2026 - Present
         quote: >
           Embarking on a new journey at Devoteam, gaining fresh expertise in a dynamic consulting environment.
         description: |
           I currently work at Devoteam, a well-established French consulting firm with a strong presence across Europe. In my role, I support users with their daily incidents, troubleshooting and resolving issues across a wide array of Power BI dashboards. The work often feels like being a detective — following the data trail until I uncover the root cause of a problem. I use Power BI, Power Query, DAX, Google Cloud Platform (GCP), and SQL on a daily basis to diagnose and fix issues efficiently.
+                    
+          Task and responsibilities include:
+          - Troubleshoot and resolve daily incidents across a large portfolio of Power BI dashboards.
+          - Use Power BI, Power Query, and DAX daily to diagnose and fix reporting issues.
+          - Query and investigate data using SQL and Google Cloud Platform (GCP) to identify root causes.
+          - Provide direct support to end users, ensuring smooth and reliable access to business insights.
+          - Follow a methodical, detective-like approach to trace issues back to their source and implement durable fixes.
 
       - layout: left
         title: Aliando
